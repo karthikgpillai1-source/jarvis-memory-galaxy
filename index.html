@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>J.A.R.V.I.S. — Memory Galaxy</title>
+<link rel="stylesheet" href="style.css?v=10">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- BOOT -->
+<div id="boot">
+  <div class="boot-core">
+    <div class="reactor">
+      <div class="reactor-ring r1"></div>
+      <div class="reactor-ring r2"></div>
+      <div class="reactor-ring r3"></div>
+      <div class="reactor-core"></div>
+    </div>
+    <div class="boot-title">J.A.R.V.I.S.</div>
+    <div class="boot-sub">JUST A RATHER VERY INTELLIGENT SYSTEM</div>
+    <div class="boot-bar"><div class="boot-fill" id="boot-fill"></div></div>
+    <div class="boot-log" id="boot-log">INITIALIZING MEMORY CORE...</div>
+  </div>
+</div>
+
+<div id="canvas-container"></div>
+<div id="label-layer"></div>
+<div id="empty-hint" class="mono" style="display:none">GALAXY CORE EMPTY — OPEN THE COMM-LINK ◐ BELOW AND TELL ME SOMETHING TO REMEMBER, SIR</div>
+
+<!-- cinematic overlays -->
+<div class="vignette"></div>
+<div class="noise"></div>
+<div class="scanlines"></div>
+<div class="grid-floor"></div>
+
+<!-- TOP BAR -->
+<header id="topbar">
+  <div class="tb-left">
+    <div class="reactor-mini"><div class="rm-core"></div></div>
+    <div class="brand">
+      <div class="brand-name">J.A.R.V.I.S.</div>
+      <div class="brand-sub">MEMORY GALAXY // MK-VII</div>
+    </div>
+  </div>
+
+  <div class="tb-center">
+    <div class="cmd-wrap">
+      <span class="cmd-prompt">▸</span>
+      <input id="cmd-input" type="text" placeholder='COMMAND — try "help", "find reactor", "filter work", "add idea: my thought"' autocomplete="off" spellcheck="false">
+      <span class="cmd-blink">▌</span>
+    </div>
+  </div>
+
+  <div class="tb-right">
+    <div class="stat"><label>PWR</label><div class="mini-bar"><div id="pwr-fill" style="width:97%"></div></div><span id="pwr-val">97%</span></div>
+    <div class="stat"><label>FPS</label><span id="fps" class="mono">60</span></div>
+    <div class="stat"><label>NODES</label><span id="memory-count" class="mono accent">0</span></div>
+    <div class="stat"><label>TIME</label><span id="current-time" class="mono">00:00:00</span></div>
+    <button id="btn-cine" class="icon-btn" title="Cinematic mode (H)">◉</button>
+    <button id="btn-sound" class="icon-btn on" title="Sound (M)">♪</button>
+  </div>
+</header>
+
+<!-- LEFT DOCK -->
+<nav id="dock">
+  <button class="dock-btn active" data-tab="control" title="Control (1)">⌖</button>
+  <button class="dock-btn" data-tab="sectors" title="Sectors (2)">◈</button>
+  <button class="dock-btn" data-tab="add" title="Store memory (3)">＋</button>
+  <button class="dock-btn" data-tab="search" title="Search (4)">⌕</button>
+  <button class="dock-btn" data-tab="system" title="System (5)">⚙</button>
+  <button class="dock-btn chat-dock" id="btn-chat" data-tab="__chat" title="JARVIS comm-link (C)">◐</button>
+</nav>
+
+<!-- LEFT PANEL -->
+<aside id="panel">
+  <div class="panel-glow"></div>
+
+  <section class="tab active" id="tab-control">
+    <div class="p-head"><span>◤ CONTROL DECK</span><em>NAV-01</em></div>
+    <div class="btn-grid">
+      <button class="holo-btn on" id="btn-rotate-auto"><i>⟳</i><span>AUTO SPIN</span></button>
+      <button class="holo-btn on" id="btn-wireframe"><i>◍</i><span>LATTICE</span></button>
+      <button class="holo-btn on" id="btn-particles"><i>✦</i><span>AURA</span></button>
+      <button class="holo-btn on" id="btn-connections"><i>⌇</i><span>LINKS</span></button>
+      <button class="holo-btn" id="btn-bloom"><i>◎</i><span>BLOOM</span></button>
+      <button class="holo-btn" id="btn-labels"><i>✎</i><span>TAGS</span></button>
+    </div>
+    <div class="slider-row"><label>SPIN</label><input type="range" id="spin-speed" min="0" max="100" value="28"><span id="spin-val" class="mono">0.28</span></div>
+    <div class="slider-row"><label>GLOW</label><input type="range" id="bloom-strength" min="0" max="200" value="110"><span id="bloom-val" class="mono">1.10</span></div>
+    <div class="slider-row"><label>ZOOM</label><input type="range" id="zoom-range" min="70" max="350" value="140"><span class="mono">AUTO</span></div>
+    <div class="hint">DRAG rotate · WHEEL zoom · CLICK star to inspect · ESC deselect</div>
+  </section>
+
+  <section class="tab" id="tab-sectors">
+    <div class="p-head"><span>◤ MEMORY SECTORS</span><em>SEC-02</em></div>
+    <div class="sector-list">
+      <button class="sector-card active" data-sector="all"><span class="dot" style="--c:#9fdcff"></span><span class="s-name">ALL SECTORS</span><span class="s-count mono" id="c-all">0</span></button>
+      <button class="sector-card" data-sector="personal"><span class="dot" style="--c:#00d4ff"></span><span class="s-name">PERSONAL</span><span class="s-count mono" id="c-personal">0</span></button>
+      <button class="sector-card" data-sector="work"><span class="dot" style="--c:#00ff9d"></span><span class="s-name">WORK</span><span class="s-count mono" id="c-work">0</span></button>
+      <button class="sector-card" data-sector="ideas"><span class="dot" style="--c:#ffb300"></span><span class="s-name">IDEAS</span><span class="s-count mono" id="c-ideas">0</span></button>
+      <button class="sector-card" data-sector="important"><span class="dot" style="--c:#ff3b5c"></span><span class="s-name">CRITICAL</span><span class="s-count mono" id="c-important">0</span></button>
+    </div>
+    <div class="p-sub">LINK DENSITY</div>
+    <div class="slider-row"><label>RANGE</label><input type="range" id="link-range" min="20" max="60" value="34"><span id="link-val" class="mono">3.4</span></div>
+  </section>
+
+  <section class="tab" id="tab-add">
+    <div class="p-head"><span>◤ STORE MEMORY</span><em>WR-03</em></div>
+    <form id="memory-form">
+      <label class="f-label">TITLE</label>
+      <input type="text" id="memory-title" placeholder="e.g. Arc Reactor v4" required maxlength="80">
+      <label class="f-label">SECTOR</label>
+      <div class="seg" id="sector-seg">
+        <button type="button" data-v="personal" class="on">PER</button>
+        <button type="button" data-v="work">WRK</button>
+        <button type="button" data-v="ideas">IDEA</button>
+        <button type="button" data-v="important">CRIT</button>
+      </div>
+      <label class="f-label">CONTENT</label>
+      <textarea id="memory-content" placeholder="Describe the memory..." required maxlength="2000"></textarea>
+      <button type="submit" class="cta">◈ COMMIT TO CORE</button>
+    </form>
+  </section>
+
+  <section class="tab" id="tab-search">
+    <div class="p-head"><span>◤ QUERY BANKS</span><em>QR-04</em></div>
+    <input type="text" id="search-input" placeholder="Search title or content..." autocomplete="off" spellcheck="false">
+    <div id="search-results"></div>
+  </section>
+
+  <section class="tab" id="tab-system">
+    <div class="p-head"><span>◤ SYSTEM</span><em>SYS-05</em></div>
+    <div class="sys-grid">
+      <div class="sys-box"><label>CORE TEMP</label><span class="mono" id="sys-temp">36.6°C</span><div class="mini-bar"><div id="temp-fill" style="width:36%"></div></div></div>
+      <div class="sys-box"><label>UPLINK</label><span class="mono accent">STABLE</span><div class="mini-bar"><div style="width:88%"></div></div></div>
+      <div class="sys-box"><label>UPTIME</label><span class="mono" id="sys-uptime">00:00:00</span></div>
+      <div class="sys-box"><label>RENDERER</label><span class="mono">WEBGL2 + BLOOM</span></div>
+    </div>
+    <div class="btn-grid">
+      <button class="holo-btn" id="btn-reshuffle"><i>⤨</i><span>RESHUFFLE</span></button>
+      <button class="holo-btn danger" id="btn-wipe"><i>✕</i><span>WIPE ALL</span></button>
+      <button class="holo-btn" id="btn-shot"><i>◉</i><span>SNAPSHOT</span></button>
+      <button class="holo-btn" id="btn-tour"><i>▶</i><span>AUTO TOUR</span></button>
+    </div>
+    <div class="p-sub">ACTION LOG — WHAT JARVIS DID</div>
+    <div id="audit-log" class="mono"><div class="audit-empty">No computer actions yet this session.</div></div>
+    <div class="btn-grid">
+      <button class="holo-btn" id="btn-audit"><i>۞</i><span>REFRESH LOG</span></button>
+      <button class="holo-btn danger" id="btn-oskill2"><i>⏹</i><span>STOP TASK</span></button>
+    </div>
+    <div class="hint">Keys: 1-5 tabs · H cinematic · M sound · R auto-spin · ESC close</div>
+  </section>
+</aside>
+
+<!-- RIGHT INSPECTOR -->
+<aside id="inspector">
+  <div class="insp-beam"></div>
+  <div class="insp-head">
+    <div>
+      <div class="insp-kicker" id="detail-sector">SECTOR</div>
+      <h2 id="detail-title">NO TARGET LOCKED</h2>
+      <div class="insp-meta mono"><span id="detail-id">ID —</span> · <span id="detail-date">—</span></div>
+    </div>
+    <button class="icon-btn" id="close-detail" title="Deselect (ESC)">✕</button>
+  </div>
+  <div class="insp-coords mono" id="detail-coords">X 0.00 · Y 0.00 · Z 0.00</div>
+  <p id="detail-content">Click any star in the sphere to inspect its memory. Use scroll to dive closer.</p>
+  <div class="insp-sec-title">NEURAL LINKS</div>
+  <div id="related"></div>
+  <div class="insp-actions">
+    <button class="holo-btn" id="btn-focus">◎ FOCUS</button>
+    <button class="holo-btn" id="btn-edit">✎ EDIT</button>
+    <button class="holo-btn danger" id="btn-delete">✕ PURGE</button>
+  </div>
+</aside>
+
+<!-- BOTTOM LOG -->
+<footer id="console">
+  <div id="jarvis-log"></div>
+</footer>
+
+<div id="hint-bar" class="mono">DRAG ROTATE · SCROLL ZOOM · CLICK STAR INSPECT · TYPE IN TOP BAR FOR COMMANDS</div>
+
+<!-- hover tag -->
+<div id="hover-tag"><span id="hover-dot"></span><span id="hover-text"></span></div>
+
+<!-- JARVIS COMM-LINK (Ollama chatbot) -->
+<aside id="chatwin" class="closed">
+  <div class="chat-head">
+    <div class="chat-title">
+      <span class="chat-dot off" id="chat-dot"></span>
+      <div><div class="chat-name">J.A.R.V.I.S. COMM-LINK</div><div class="chat-sub mono" id="chat-status">CONNECTING…</div></div>
+    </div>
+    <select id="model-select" class="mono" title="Ollama model"></select>
+    <button class="icon-btn" id="btn-voice" title="Spoken replies — neural British voice">🔇</button>
+    <button class="icon-btn" id="btn-wake" title="JARVIS sleeping — say HEY JARVIS (status only)" disabled>◉</button>
+    <button class="icon-btn" id="btn-oskill" title="Stop screen control">⏹</button>
+    <button class="icon-btn" id="chat-close" title="Close (C)">✕</button>
+  </div>
+  <div id="chat-msgs"></div>
+  <div id="voice-status" class="mono">STARTING EARS — SAY HEY JARVIS…</div>
+  <div class="chat-chips">
+    <button data-q="Brief me, JARVIS">Brief me</button>
+    <button data-q="What critical items need my attention?">Critical?</button>
+    <button data-q="Show me my work memories">Work?</button>
+  </div>
+  <form id="chat-form" autocomplete="off">
+    <input id="chat-input" placeholder="Ask JARVIS anything… (or say HEY JARVIS)" maxlength="2000">
+    <button type="submit" title="Send">➤</button>
+  </form>
+</aside>
+
+<div id="toast-container"></div>
+<div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script type="module" src="app.js?v=8"></script>
+<script type="module" src="chat.js?v=21"></script>
+<script type="module" src="voice.js?v=8"></script>
+</body>
+</html>
